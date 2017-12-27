@@ -16,12 +16,15 @@
 
 package my.little.pony.sparkle.sample.job;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import static my.little.pony.sparkle.Sparkle.description;
 import static my.little.pony.sparkle.Sparkle.spark;
 import static my.little.pony.sparkle.io.SparkleFormat.csvh;
+import static my.little.pony.sparkle.io.SparkleFormat.parquet;
 import static my.little.pony.sparkle.io.SparkleReader.read;
+import static my.little.pony.sparkle.io.SparkleWriter.overwrite;
 import my.little.pony.sparkle.SparkleApplication;
 import my.little.pony.sparkle.job.Job;
 import my.little.pony.sparkle.sample.job.cli.CliOption2;
@@ -40,19 +43,12 @@ public class SparkleTest extends Job<CliOption2> {
 
     public void run() {
 
-        description("Reading", "file : " + Arrays.toString(getSource()));
         read().as(csvh(getSource())).createOrReplaceTempView("train");
 
-        description("show \uD83E\uDD84");
-        Dataset<Row> ds = spark().sql("SELECT sum(age), avg(age) FROM train where is_not_blank(Cabin) group by sex");
+        description("query", "show \uD83E\uDD84");
+        Dataset<Row> ds = spark().sql("SELECT sum(age) as sum_age, avg(age) as avg_age FROM train where is_not_blank(Cabin) group by sex");
 
-        ds.show();
-        
-        /*try {
-            System.in.read();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } */
+        overwrite(ds).as(parquet(getDestination()));
     }
 
 }

@@ -16,11 +16,13 @@
 
 package my.little.pony.sparkle.io;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
+import static my.little.pony.sparkle.Sparkle.description;
 import com.google.common.base.Preconditions;
 import my.little.pony.sparkle.job.JobContext;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +35,7 @@ public class SparkleFormat {
 
     public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> parquet(String... name) {
         Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
+        description("Reading", String.format("parquet : %s", Arrays.toString(name)));
 
         return (dfr, context) ->
                 dfr.parquet(source(context, name));
@@ -40,6 +43,7 @@ public class SparkleFormat {
 
     public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> orc(String... name) {
         Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
+        description("Reading", String.format("orc : %s", Arrays.toString(name)));
 
         return (dfr, context) ->
                 dfr.orc(source(context, name));
@@ -47,6 +51,7 @@ public class SparkleFormat {
 
     public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> text(String... name) {
         Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
+        description("Reading", String.format("text : %s", Arrays.toString(name)));
 
         return (dfr, context) ->
                 dfr.text(source(context, name));
@@ -55,6 +60,7 @@ public class SparkleFormat {
 
     public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> csv(String... name) {
         Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
+        description("Reading", String.format("csv : %s", Arrays.toString(name)));
 
         return (dfr, context) ->
                 dfr.options(options(false, ",")).csv(source(context, name));
@@ -63,6 +69,7 @@ public class SparkleFormat {
 
     public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> csvh(String... name) {
         Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
+        description("Reading", String.format("csvh : %s", Arrays.toString(name)));
 
         return (dfr, context) ->
                 dfr.options(options(true, ",")).csv(source(context, name));
@@ -71,6 +78,7 @@ public class SparkleFormat {
 
     public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> tsv(String... name) {
         Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
+        description("Reading", String.format("tsv : %s", Arrays.toString(name)));
 
         return (dfr, context) ->
                 dfr.options(options(false, "\t")).csv(source(context, name));
@@ -79,6 +87,7 @@ public class SparkleFormat {
 
     public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> tsvh(String... name) {
         Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
+        description("Reading", String.format("tsvh : %s", Arrays.toString(name)));
 
         return (dfr, context) ->
                 dfr.options(options(true, "\t")).csv(source(context, name));
@@ -87,6 +96,7 @@ public class SparkleFormat {
 
     public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> ssv(String... name) {
         Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
+        description("Reading", String.format("ssv : %s", Arrays.toString(name)));
 
         return (dfr, context) ->
                 dfr.options(options(false, ";")).csv(source(context, name));
@@ -95,6 +105,7 @@ public class SparkleFormat {
 
     public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> ssvh(String... name) {
         Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
+        description("Reading", String.format("ssvh : %s", Arrays.toString(name)));
 
         return (dfr, context) ->
                 dfr.options(options(true, ";")).csv(source(context, name));
@@ -103,7 +114,8 @@ public class SparkleFormat {
 
     public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> table(String... name) {
         Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
-        
+        description("Reading", String.format("table : %s", name[0]));
+
         return (dfr, context) ->
                 dfr.table(name[0]);
 
@@ -115,51 +127,71 @@ public class SparkleFormat {
 
     public static BiConsumer<DataFrameWriter<Row>, JobContext> parquet(String name) {
         Preconditions.checkState(StringUtils.isNotBlank(name), "Name should not be null");
+        description("Writing", String.format("parquet : %s", name));
+
         return (ds, context) -> ds.parquet(destination(name, context));
     }
 
     public static BiConsumer<DataFrameWriter<Row>, JobContext> orc(String name) {
         Preconditions.checkState(StringUtils.isNotBlank(name), "Name should not be null");
+        description("Writing", String.format("orc : %s", name));
+
         return (ds, context) -> ds.orc(destination(name, context));
     }
 
     public static BiConsumer<DataFrameWriter<Row>, JobContext> text(String name) {
         Preconditions.checkState(StringUtils.isNotBlank(name), "Name should not be null");
+        description("Writing", String.format("text : %s", name));
+
         return (ds, context) -> ds.text(destination(name, context));
     }
 
     public static BiConsumer<DataFrameWriter<Row>, JobContext> csv(String name) {
         Preconditions.checkState(StringUtils.isNotBlank(name), "Name should not be null");
+        description("Writing", String.format("csv : %s", name));
+
         return (ds, context) -> ds.options(options(false, ",")).csv(destination(name, context));
     }
 
     public static BiConsumer<DataFrameWriter<Row>, JobContext> csvh(String name) {
         Preconditions.checkState(StringUtils.isNotBlank(name), "Name should not be null");
+        description("Writing", String.format("csvh : %s", name));
+
         return (ds, context) -> ds.options(options(true, ",")).csv(destination(name, context));
     }
 
     public static BiConsumer<DataFrameWriter<Row>, JobContext> tsv(String name) {
         Preconditions.checkState(StringUtils.isNotBlank(name), "Name should not be null");
+        description("Writing", String.format("tsv : %s", name));
+
         return (ds, context) -> ds.options(options(false, "\t")).csv(destination(name, context));
     }
 
     public static BiConsumer<DataFrameWriter<Row>, JobContext> tsvh(String name) {
         Preconditions.checkState(StringUtils.isNotBlank(name), "Name should not be null");
+        description("Writing", String.format("tsvh : %s", name));
+
         return (ds, context) -> ds.options(options(true, "\t")).csv(destination(name, context));
     }
 
     public static BiConsumer<DataFrameWriter<Row>, JobContext> ssv(String name) {
         Preconditions.checkState(StringUtils.isNotBlank(name), "Name should not be null");
+        description("Writing", String.format("ssv : %s", name));
+
         return (ds, context) -> ds.options(options(false, ";")).csv(destination(name, context));
     }
 
     public static BiConsumer<DataFrameWriter<Row>, JobContext> ssvh(String name) {
         Preconditions.checkState(StringUtils.isNotBlank(name), "Name should not be null");
+        description("Writing", String.format("ssvh : %s", name));
+
         return (ds, context) -> ds.options(options(true, ";")).csv(destination(name, context));
     }
 
     public static BiConsumer<DataFrameWriter<Row>, JobContext> table(String name) {
         Preconditions.checkState(StringUtils.isNotBlank(name), "Name should not be null");
+        description("Writing", String.format("table : %s", name));
+
         return (ds, context) -> ds.saveAsTable(name);
     }
 
