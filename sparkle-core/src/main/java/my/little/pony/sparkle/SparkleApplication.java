@@ -18,7 +18,6 @@ package my.little.pony.sparkle;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.ServiceLoader;
 
 import my.little.pony.sparkle.cli.CliOptions;
@@ -115,7 +114,7 @@ public class SparkleApplication {
         try {
             IOUtils.copy(url.openStream(), System.out);
         } catch (IOException e) {
-            //
+            // ignore
         }
 
     }

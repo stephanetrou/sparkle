@@ -81,6 +81,7 @@ fabric.properties
 .idea/misc.xml
 .idea/modules.xml
 .idea/scala_compiler.xml
+.idea/vcs.xml
 sparkle-catalog/sparkle-catalog.iml
 sparkle-catalog/src/main/java/
 sparkle-catalog/src/test/
@@ -113,3 +114,6 @@ sparkle-sample/target/generated-sources/
 sparkle-sample/target/maven-archiver/
 sparkle-sample/target/maven-status/
 sparkle.iml
+/spark-warehouse/
+sparkle-core/target/classes/hadoop/
+sparkle-core/target/dependency-maven-plugin-markers/

@@ -27,13 +27,62 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>sparkle-core</artifactId>
-    
+
+    <repositories>
+        <repository>
+            <id>mapr realeases</id>
+            <url>http://repository.mapr.com/nexus/content/groups/mapr-public/releases/</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+        </repository>
+    </repositories>
+
+
     <dependencies>
         <dependency>
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-sql_2.11</artifactId>
         </dependency>
+        
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.0.2</version>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.hadoop</groupId>
+                                    <artifactId>hadoop-winutils</artifactId>
+                                    <version>2.7.1</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/classes/hadoop/bin</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                            <includes>winutils.exe,hadoop.dll</includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+    </build>
+  
 
 </project>
