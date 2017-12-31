@@ -19,28 +19,33 @@ package my.little.pony.sparkle.io;
 import java.util.function.BiFunction;
 
 import static my.little.pony.sparkle.Sparkle.spark;
+import com.google.common.base.Preconditions;
 import my.little.pony.sparkle.job.JobContext;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.spark.sql.DataFrameReader;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 
 public class SparkleReader {
 
-    public static As read() {
-        return new As(spark().read());
+    public static As read(String... names) {
+        StringUtils.isNoneBlank(names);
+        return new As(spark().read(), names);
     }
     
-    public static class As {
+
+    public final static class As {
 
         private DataFrameReader dfr;
+        private String[] names;
 
-
-        protected As(DataFrameReader dfr) {
+        protected As(DataFrameReader dfr, String... names) {
             this.dfr = dfr;
+            this.names = names;
         }
 
-        public Dataset<Row> as(BiFunction<DataFrameReader, JobContext, Dataset<Row>> biConsumer) {
-            return biConsumer.apply(dfr, new JobContext());
+        public Dataset<Row> as(ReaderFunction<DataFrameReader, String[], JobContext, Dataset<Row>> readerFunction) {
+            return readerFunction.apply(dfr, names, new JobContext());
         }
 
     }

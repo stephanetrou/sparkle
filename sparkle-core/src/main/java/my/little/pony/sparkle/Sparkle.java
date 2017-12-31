@@ -35,18 +35,17 @@ public class Sparkle {
     private final static Logger LOGGER = LogManager.getLogger(Sparkle.class);
 
     static {
-
-
-
         if (isSubmitted() || runOnCluster()) {
             // nothing  for now
         } else {
-
             installWinutils();
 
-            SparkSession sparkSession = SparkSession.builder().master("local").appName("standalone").getOrCreate();
-            SparkSession.setActiveSession(sparkSession);
-            SparkSession.setDefaultSession(sparkSession);
+            SparkSession sparkSession;
+            if (!Boolean.getBoolean("sparkle.standalone.session.disable")) {
+                sparkSession = SparkSession.builder().master("local").appName("standalone").getOrCreate();
+                SparkSession.setActiveSession(sparkSession);
+                SparkSession.setDefaultSession(sparkSession);
+            }
         }
     }
 
@@ -102,8 +101,6 @@ public class Sparkle {
 
                 System.setProperty("hadoop.home.dir", hadoopDir.getAbsolutePath());
                 LOGGER.info("Setting 'hadoop.home.dir' to " + System.getProperty("hadoop.home.dir"));
-                System.out.println("Setting 'hadoop.home.dir' to " + System.getProperty("hadoop.home.dir"));
-
             } catch (IOException e) {
                 throw new RuntimeException("Could not install wintutils.exe", e);
             }

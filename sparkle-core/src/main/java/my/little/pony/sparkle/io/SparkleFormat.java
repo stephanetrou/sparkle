@@ -33,92 +33,77 @@ import org.apache.spark.sql.Row;
 
 public class SparkleFormat {
 
-    public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> parquet(String... name) {
-        Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
-        description("Reading", String.format("parquet : %s", Arrays.toString(name)));
-
-        return (dfr, context) ->
-                dfr.parquet(source(context, name));
+    public static ReaderFunction<DataFrameReader, String[], JobContext, Dataset<Row>> parquet() {
+        return (dfr, names, context) -> {
+            description("Reading", String.format("parquet : %s", Arrays.toString(names)));
+            return dfr.parquet(source(context, names));
+        };
     }
 
-    public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> orc(String... name) {
-        Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
-        description("Reading", String.format("orc : %s", Arrays.toString(name)));
-
-        return (dfr, context) ->
-                dfr.orc(source(context, name));
+    public static ReaderFunction<DataFrameReader, String[], JobContext, Dataset<Row>> orc() {
+        return (dfr, names, context) -> {
+            description("Reading", String.format("orc : %s", Arrays.toString(names)));
+            return dfr.orc(source(context, names));
+        };
     }
 
-    public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> text(String... name) {
-        Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
-        description("Reading", String.format("text : %s", Arrays.toString(name)));
-
-        return (dfr, context) ->
-                dfr.text(source(context, name));
-
+    public static ReaderFunction<DataFrameReader, String[], JobContext, Dataset<Row>> text() {
+        return (dfr, names, context) -> {
+            description("Reading", String.format("text : %s", Arrays.toString(names)));
+            return dfr.text(source(context, names));
+        };
     }
 
-    public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> csv(String... name) {
-        Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
-        description("Reading", String.format("csv : %s", Arrays.toString(name)));
-
-        return (dfr, context) ->
-                dfr.options(options(false, ",")).csv(source(context, name));
+    public static ReaderFunction<DataFrameReader, String[], JobContext, Dataset<Row>> csv() {
+        return (dfr, names, context) -> {
+            description("Reading", String.format("csv : %s", Arrays.toString(names)));
+            return dfr.options(options(false, ",")).csv(source(context, names));
+        };
 
     }
 
-    public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> csvh(String... name) {
-        Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
-        description("Reading", String.format("csvh : %s", Arrays.toString(name)));
-
-        return (dfr, context) ->
-                dfr.options(options(true, ",")).csv(source(context, name));
-
-    }
-
-    public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> tsv(String... name) {
-        Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
-        description("Reading", String.format("tsv : %s", Arrays.toString(name)));
-
-        return (dfr, context) ->
-                dfr.options(options(false, "\t")).csv(source(context, name));
+    public static ReaderFunction<DataFrameReader, String[], JobContext, Dataset<Row>> csvh() {
+        return (dfr, names, context) -> {
+            description("Reading", String.format("csv : %s", Arrays.toString(names)));
+            return dfr.options(options(true, ",")).csv(source(context, names));
+        };
 
     }
 
-    public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> tsvh(String... name) {
-        Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
-        description("Reading", String.format("tsvh : %s", Arrays.toString(name)));
-
-        return (dfr, context) ->
-                dfr.options(options(true, "\t")).csv(source(context, name));
-
+    public static ReaderFunction<DataFrameReader, String[], JobContext, Dataset<Row>> tsv() {
+        return (dfr, names, context) -> {
+            description("Reading", String.format("tsv : %s", Arrays.toString(names)));
+            return dfr.options(options(false, "\t")).csv(source(context, names));
+        };
     }
 
-    public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> ssv(String... name) {
-        Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
-        description("Reading", String.format("ssv : %s", Arrays.toString(name)));
-
-        return (dfr, context) ->
-                dfr.options(options(false, ";")).csv(source(context, name));
-
+    public static ReaderFunction<DataFrameReader, String[], JobContext, Dataset<Row>>tsvh() {
+        return (dfr, names, context) -> {
+            description("Reading", String.format("tsvh : %s", Arrays.toString(names)));
+            return dfr.options(options(true, "\t")).csv(source(context, names));
+        };
     }
 
-    public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> ssvh(String... name) {
-        Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
-        description("Reading", String.format("ssvh : %s", Arrays.toString(name)));
-
-        return (dfr, context) ->
-                dfr.options(options(true, ";")).csv(source(context, name));
-
+    public static ReaderFunction<DataFrameReader, String[], JobContext, Dataset<Row>> ssv() {
+        return (dfr, names, context) -> {
+            description("Reading", String.format("ssv : %s", Arrays.toString(names)));
+            return dfr.options(options(false, ";")).csv(source(context, names));
+        };
     }
 
-    public static BiFunction<DataFrameReader, JobContext, Dataset<Row>> table(String... name) {
-        Preconditions.checkState(StringUtils.isNoneBlank(name), "Name should not be null");
-        description("Reading", String.format("table : %s", name[0]));
+    public static ReaderFunction<DataFrameReader, String[], JobContext, Dataset<Row>> ssvh() {
+        return (dfr, names, context) -> {
+            description("Reading", String.format("ssvh : %s", Arrays.toString(names)));
+            return dfr.options(options(true, ";")).csv(source(context, names));
+        };
+    }
 
-        return (dfr, context) ->
-                dfr.table(name[0]);
-
+    public static ReaderFunction<DataFrameReader, String[], JobContext, Dataset<Row>> table() {
+        return (dfr, names, context) -> {
+            String table = names[0];
+            description("Reading", String.format("table : %s", table));
+           return dfr.table(table);
+        };
     }
 
     public static BiConsumer<DataFrameWriter<Row>, JobContext> none() {

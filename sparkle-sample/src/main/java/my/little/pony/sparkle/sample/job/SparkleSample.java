@@ -16,9 +16,6 @@
 
 package my.little.pony.sparkle.sample.job;
 
-import java.io.IOException;
-import java.util.Arrays;
-
 import static my.little.pony.sparkle.Sparkle.description;
 import static my.little.pony.sparkle.Sparkle.spark;
 import static my.little.pony.sparkle.io.SparkleFormat.csvh;
@@ -31,10 +28,10 @@ import my.little.pony.sparkle.sample.job.cli.CliOption2;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 
-public class SparkleTest extends Job<CliOption2> {
+public class SparkleSample extends Job<CliOption2> {
 
     public static void main(String[] args) {
-        SparkleApplication.run(SparkleTest.class, new String[] {
+        SparkleApplication.run(SparkleSample.class, new String[] {
                 "-s","/Users/stephanetrou/projets/titanic/train.csv",
                 "-d","/tmp/destination.parquet",
                 "--debug"
@@ -43,7 +40,9 @@ public class SparkleTest extends Job<CliOption2> {
 
     public void run() {
 
-        read().as(csvh(getSource())).createOrReplaceTempView("train");
+        read(getSource())
+                .as(csvh())
+                .createOrReplaceTempView("train");
 
         description("query", "show \uD83E\uDD84");
         Dataset<Row> ds = spark().sql("SELECT sum(age) as sum_age, avg(age) as avg_age FROM train where is_not_blank(Cabin) group by sex");
