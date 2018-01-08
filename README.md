@@ -28,6 +28,19 @@ librairies provided by Spark.
     }
 ``` 
 
+### Run on java command line
+
+```bash
+ java sparkle-sample.jar SparkleSample -s /tmp/titanic/train.csv -d /tmp/destination.parquet --debug 
+```
+
+### Run on Cluster
+
+```bash
+ spark-submit --class SparkleSample sparkle-sample.jar -s /tmp/titanic/train.csv -d /tmp/destination.parquet --debug
+```
+
+
 ## Features : 
 
 * Simple CLI Configuration 
